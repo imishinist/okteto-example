@@ -1,1 +1,5 @@
 # okteto-example
+
+```
+okteto deploy
+```
