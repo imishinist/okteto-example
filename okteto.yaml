@@ -1,0 +1,2 @@
+deploy:
+  - helm upgrade --install front front/chart --set image=${OKTETO_BUILD_FRONTEND_IMAGE}
