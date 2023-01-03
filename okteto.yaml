@@ -1,2 +1,9 @@
+build:
+  api:
+    context: api
+
 deploy:
-  - helm upgrade --install front front/chart --set image=${OKTETO_BUILD_FRONTEND_IMAGE}
+  - name: Deploy front
+    command: helm upgrade --install front front/chart --set image=${OKTETO_BUILD_FRONTEND_IMAGE}
+  - name: Deploy API
+    command: helm upgrade --install api api/chart --set image=${OKTETO_BUILD_API_IMAGE}
