@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elasticsearch
+  labels:
+    component: elasticsearch
+spec:
+  selector:
+    matchLabels:
+      component: elasticsearch
+  template:
+    metadata:
+      labels:
+        component: elasticsearch
+    spec:
+      containers:
+        - name: elasticsearch
+          image: docker.elastic.co/elasticsearch/elasticsearch:7.13.3
+          env:
+            - name: discovery.type
+              value: single-node
+          ports:
+            - containerPort: 9200
+              name: http
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 600m
+              memory: 2Gi
+            requests:
+              cpu: 600m
+              memory: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kibana
+  labels:
+    component: kibana
+spec:
+  selector:
+    matchLabels:
+      component: kibana
+  template:
+    metadata:
+      labels:
+        component: kibana
+    spec:
+      containers:
+        - name: kibana
+          image: docker.elastic.co/kibana/kibana:7.13.3
+          env:
+            - name: ELASTICSEARCH_HOSTS
+              value: http://elasticsearch:9200
+          ports:
+            - containerPort: 5601
+              name: http
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 600m
+              memory: 2Gi
+            requests:
+              cpu: 600m
+              memory: 2Gi
