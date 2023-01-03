@@ -14,6 +14,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	logger.Info("request received",
 		zap.String("path", r.URL.Path),
+		zap.String("host", r.Host),
 		zap.String("remote-address", r.RemoteAddr))
 
 	w.Header().Add("Content-Type", "application/json; charset=utf-8")

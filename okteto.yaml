@@ -1,9 +1,48 @@
+name: okteto-example
+
+# The build section defines how to build the images of your development environment
+# More info: https://www.okteto.com/docs/reference/manifest/#build
 build:
+
+  # You can use the following env vars to refer to this image in your deploy commands:
+  #  - OKTETO_BUILD_API_REGISTRY: image registry
+  #  - OKTETO_BUILD_API_REPOSITORY: image repo
+  #  - OKTETO_BUILD_API_IMAGE: image name
+  #  - OKTETO_BUILD_API_SHA: image tag sha256
   api:
     context: api
+    dockerfile: Dockerfile
+  api-dev:
+    context: api
+    dockerfile: Dockerfile
+    target: dev
 
+# The deploy section defines how to deploy your development environment
+# More info: https://www.okteto.com/docs/reference/manifest/#deploy
 deploy:
-  - name: Deploy front
-    command: helm upgrade --install front front/chart --set image=${OKTETO_BUILD_FRONTEND_IMAGE}
-  - name: Deploy API
-    command: helm upgrade --install api api/chart --set image=${OKTETO_BUILD_API_IMAGE}
+  commands:
+    - name: Deploy front
+      command: helm upgrade --install front front/chart --set image=${OKTETO_BUILD_FRONTEND_IMAGE}
+    - name: Deploy API
+      command: helm upgrade --install api api/chart --set image=${OKTETO_BUILD_API_IMAGE}
+
+# The dependencies section defines other git repositories to be deployed as part of your development environment
+# More info: https://www.okteto.com/docs/reference/manifest/#dependencies
+# dependencies:
+#   - https://github.com/okteto/sample
+
+
+# The dev section defines how to activate a development container
+# More info: https://www.okteto.com/docs/reference/manifest/#dev
+dev:
+  api:
+    image: ${OKTETO_BUILD_API_DEV_IMAGE}
+    command: bash
+    securityContext:
+      capabilities:
+        add:
+        - SYS_PTRACE
+    sync:
+      - api:/usr/src/app
+    forward:
+      - 2345:2345
